@@ -31,6 +31,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
+
 # Allow code coverage.
 if("{CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang"
     OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
@@ -77,6 +79,13 @@ FetchContent_Declare(
     GIT_TAG        v2.11.1
 )
 
+FetchContent_Declare(
+        sfml
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG        2.5.1
+
+)
+
 # Adds catch2 library. This is a header only library.
 FetchContent_GetProperties(catch2)
 if(NOT catch2_POPULATED)
@@ -87,3 +96,8 @@ if(NOT catch2_POPULATED)
 endif()
 
 # Add more CMake libraries here ...
+FetchContent_GetProperties(sfml)
+if(NOT sfml_POPULATED)
+    FetchContent_Populate(sfml)
+    add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR})
+endif()
