@@ -9,7 +9,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-
+#include <cinder/app/KeyEvent.h>
 
 namespace myapp {
 
@@ -19,24 +19,28 @@ class WordSearch : public cinder::app::App {
   void setup() override;
   void update() override;
   void draw() override;
-  void keyDown(cinder::app::KeyEvent) override;
+  //void keyDown(cinder::app::KeyEvent) override;
   void PrintText(const std::string& text,
                              const glm::vec2& loc);
   void InitializeEmpty();
   void DrawGrid();
   void DrawSquares();
-  void WordBank();
+  void WordsFound();
   void InsertWords();
   void RandomLetters();
   void Display();
+  void keyDown(cinder::app::KeyEvent event) override;
+  void keyUp(cinder::app::KeyEvent event) override ;
 
   void make_board();
   void update_mouse_pressed(sf::Vector2f mpos);
   void user_interaction(sf::Color col);
   void Cheat();
   void PerWord(int c, int row, int col, int j);
+  sf::String map[20][20];
+  sf::RenderWindow window;
  private:
-  std::string map[20][20];
+
 
 
   float fX, fY;                                // Dimensions of desktop

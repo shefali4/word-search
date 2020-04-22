@@ -8,13 +8,13 @@
 #include <cinder/app/App.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
 using cinder::TextBox;
 using namespace std;
+string build_word;
 
 const char kNormalFont[] = "Arial";
 using cinder::Color;
@@ -23,6 +23,8 @@ int count = 0;
 string words[] = {"apple", "orange", "banana", "grape", "kiwi", "melon",
                   "pea", "asdfasdfasdfasdfasdfasdf"};
 list<string> word_bank = {};
+string typed_words[] = {};
+
 
 
 
@@ -33,12 +35,26 @@ WordSearch::WordSearch() {
 }
 
 void WordSearch::setup() {
-
+/*
+  window.create(sf::VideoMode(800, 800), "SFML window");
+  window.setFramerateLimit(60);
+  while (window.isOpen()) {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed)
+        window.close();
+    }
+    window.setActive();
+    window.display();
+  }*/
 
 }
 
 
 void WordSearch::update() {
+  KeyEvent event;
+  keyUp(event);
+  keyDown(event);
 
 
 
@@ -53,15 +69,17 @@ void WordSearch::draw() {
     InitializeEmpty();
     InsertWords();
     RandomLetters();
-    WordBank();
+    WordsFound();
     Display();
     DrawSquares();
     count++;
   }
 
+
+
 }
 
-void WordSearch::keyDown(KeyEvent event) { }
+//void WordSearch::keyDown(KeyEvent event) { }
 
 void WordSearch::PrintText(const std::string& text,
                            const glm::vec2& loc) {
@@ -98,10 +116,10 @@ void WordSearch::InitializeEmpty() {
   }
 }
 
-void WordSearch::WordBank() {
+void WordSearch::WordsFound() {
   int loc_y = 90;
   cinder::vec2 loc = {135, loc_y};
-  PrintText("Word Bank:", loc);
+  PrintText("Words Found:", loc);
   for (int i = 0; i < words->size(); i++) {
     loc_y += 50;
     PrintText(words[i] + "\n", {135, loc_y});
@@ -225,6 +243,31 @@ void WordSearch::Cheat() {
   cinder::gl::drawStrokedRect( cinder::Rectf( 80,500,130,550) );
 
 }
+
+void WordSearch::keyDown( cinder::app::KeyEvent event ) {
+  string this_char (1, event.getChar());
+  build_word.append(this_char);
+  cinder::vec2 loc = {135, 135};
+  int count = 0;
+  if (event.getChar() == '!') {
+    for (int i = 0; i < words->length(); i++) {
+      for (int j = 0; j < typed_words[0].length(); j++) {
+        if (words[count] + '!' == this_char) {
+          PrintText("Worked", loc);
+        }
+      }
+    }
+  }
+}
+
+void WordSearch::keyUp( cinder::app::KeyEvent event ) {
+  /*if( event.getChar() == 'a' ) {
+
+    cinder::gl::color(0,1,0);
+    cinder::gl::drawStrokedRect( cinder::Rectf( 80,500,130,550) );
+  }*/
+}
+
 
 
 //

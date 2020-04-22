@@ -86,6 +86,13 @@ FetchContent_Declare(
 
 )
 
+FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/simongeilfus/Cinder-ImGui
+
+
+)
+
 # Adds catch2 library. This is a header only library.
 FetchContent_GetProperties(catch2)
 if(NOT catch2_POPULATED)
@@ -101,3 +108,13 @@ if(NOT sfml_POPULATED)
     FetchContent_Populate(sfml)
     add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR})
 endif()
+
+
+FetchContent_GetProperties(imgui)
+if(NOT imgui_POPULATED)
+    FetchContent_Populate(imgui)
+    # This is overkill since we only need a single file. Though it is a clean solution.
+    add_library(imgui INTERFACE)
+    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR}/single_include)
+endif()
+
