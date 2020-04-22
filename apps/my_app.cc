@@ -8,31 +8,28 @@
 #include <cinder/app/App.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <cctype>
 
 namespace myapp {
 
+using cinder::Color;
+using cinder::ColorA;
 using cinder::app::KeyEvent;
 using cinder::TextBox;
 using namespace std;
 string build_word;
-int type_x_loc = 200;
+int type_x_loc = 300;
 const char kNormalFont[] = "Arial";
-using cinder::Color;
-using cinder::ColorA;
 int count = 0;
 string words[] = {"apple", "orange", "banana", "grape", "kiwi", "melon",
                   "pea", "asdfasdfasdfasdfasdfasdf"};
 list<string> word_bank = {};
-string typed_words[] = {};
 
 
 
 
 
-WordSearch::WordSearch() {
-
-
-}
+WordSearch::WordSearch() {}
 
 void WordSearch::setup() {
 /*
@@ -50,18 +47,12 @@ void WordSearch::setup() {
 
 }
 
-
 void WordSearch::update() {
   KeyEvent event;
-  keyUp(event);
   keyDown(event);
-
-
-
 }
 
 void WordSearch::draw() {
-
   if (count == 0) {
     DrawGrid();
     InitializeEmpty();
@@ -70,12 +61,8 @@ void WordSearch::draw() {
     WordsFound();
     Display();
     Cheat();
-    DrawSquares();
     count++;
   }
-
-
-
 }
 
 //void WordSearch::keyDown(KeyEvent event) { }
@@ -116,17 +103,14 @@ void WordSearch::InitializeEmpty() {
 }
 
 void WordSearch::WordsFound() {
-  int loc_y = 90;
-  cinder::vec2 loc = {135, loc_y};
+  int loc_y = 130;
+  cinder::vec2 loc = {140, loc_y};
   PrintText("Words Found:", loc);
   for (int i = 0; i < words->size(); i++) {
-    loc_y += 50;
-    PrintText(words[i] + "\n", {135, loc_y});
-
+    loc_y += 45;
+    PrintText(words[i] + "\n", {140, loc_y});
   }
 }
-
-
 
 void WordSearch::InsertWords() {
   int row, col;
@@ -204,42 +188,28 @@ void WordSearch::DrawGrid() {
   int up = 85;
   int down = 110;
   for (int i = 0; i < 20; i++) {
-    cinder::gl::drawStrokedRect(cinder::Rectf(right,85,left,585));
+    cinder::gl::drawStrokedRect(cinder::Rectf
+    (right,85,left,585), 2);
     right+=increment;
     left+= increment;
-
   }
 
   cinder::gl::ScopedColor(1, 0,0);
   for (int i = 0; i < 20; i++) {
-    cinder::gl::drawStrokedRect(cinder::Rectf(275, up, 775, down));
+    cinder::gl::drawStrokedRect(cinder::Rectf
+    (275, up, 775, down), 2);
     up += increment;
     down += increment;
   }
 }
 
-void WordSearch::DrawSquares() {
-/*  sf::RenderWindow window;
-  for (int row = 0; row < 20; row++) {
-    for (int col = 0; col < 20; col++) {
-
-      sf::RectangleShape rectangle(sf::Vector2f(120, 50));
-      rectangle.setSize(sf::Vector2f(100, 100));
-      window.draw(rectangle);
-      window.display();
-
-    }
-  }
-*/
-
-
-}
-
 void WordSearch::Cheat() {
 
   cinder::gl::color(1,0,0);
-  cinder::gl::drawStrokedRect( cinder::Rectf( 60,500,90,530) );
-  PrintText("CHEAT", {130, 530});
+
+  cinder::gl::drawStrokedRect( cinder::Rectf
+  ( 60,500,90,530),5);
+  PrintText("CHEAT", {140, 530});
   cinder::gl::color(Color::black());
 }
 
@@ -253,28 +223,30 @@ void WordSearch::keyDown( cinder::app::KeyEvent event ) {
     int count = 0;
     PrintText(this_char, text_loc);
   }
-  if (event.getChar() == '!') {
-    type_x_loc = 200;
+  if (event.getChar() == ' ') {
+    type_x_loc = 300;
     build_word.clear();
     cinder::gl::color(Color::black());
-    cinder::gl::drawSolidRect( cinder::Rectf( 80,600,800,750) );
+    cinder::gl::drawSolidRect( cinder::Rectf
+    ( 80,600,800,750) );
 
+  }
+  if (event.isShiftDown()) {
+    std::cout << "working";
+    cinder::gl::color(1,0,1);
+    cinder::gl::drawSolidRect( cinder::Rectf
+    ( 60,500,90,530));
   }
 }
 
-
-
 void WordSearch::keyUp( cinder::app::KeyEvent event ) {
-  /*if( event.getChar() == 'a' ) {
-
-    cinder::gl::color(0,1,0);
-    cinder::gl::drawStrokedRect( cinder::Rectf( 80,500,130,550) );
-  }*/
+  if (!event.isShiftDown()) {
+    cinder::gl::color(1,0,0);
+    cinder::gl::drawStrokedRect( cinder::Rectf
+    ( 60,500,90,530),5);
+    cinder::gl::color(Color::black());
+    cinder::gl::drawSolidRect( cinder::Rectf
+    ( 62,502,88,528));
+  }
 }
-
-
-
-//
-
 }  // namespace myapp
-
