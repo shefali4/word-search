@@ -49,7 +49,7 @@ class WordSearch : public cinder::app::App {
   /**
    * Collects all the correct words the player has found
    */
-  void WordsFound();
+  void DisplayWordsFound();
 
   /**
    * Inserts the words from the word bank into the grid
@@ -64,7 +64,7 @@ class WordSearch : public cinder::app::App {
   /**
    * Displays table
    */
-  void Display();
+  void DisplayFilledGrid();
 
   /**
    * Checks if Cheat button has been accessed
@@ -77,10 +77,11 @@ class WordSearch : public cinder::app::App {
    * @param event key event
    */
   void keyUp(cinder::app::KeyEvent event) override ;
-  void Cheat();
+  void DisplayCheat();
   void PerWord(int c, int row, int col, int j);
  private:
   sf::String map[20][20];
+  sf::Window window;
 };
 }  // namespace myapp
 
