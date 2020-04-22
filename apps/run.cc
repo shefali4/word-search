@@ -23,7 +23,6 @@ void SetUp(App::Settings *settings) {
   settings->setWindowSize(kWidth, kHeight);
   settings->setTitle("My CS 126 Application");
 }
-
 }
 
 // This is a macro that runs the application.

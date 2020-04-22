@@ -15,7 +15,7 @@ using cinder::app::KeyEvent;
 using cinder::TextBox;
 using namespace std;
 string build_word;
-
+int type_x_loc = 200;
 const char kNormalFont[] = "Arial";
 using cinder::Color;
 using cinder::ColorA;
@@ -63,14 +63,13 @@ void WordSearch::update() {
 void WordSearch::draw() {
 
   if (count == 0) {
-
-    Cheat();
     DrawGrid();
     InitializeEmpty();
     InsertWords();
     RandomLetters();
     WordsFound();
     Display();
+    Cheat();
     DrawSquares();
     count++;
   }
@@ -131,7 +130,6 @@ void WordSearch::WordsFound() {
 
 void WordSearch::InsertWords() {
   int row, col;
-
   for (int j = 0; j < words->size(); j++) {
     if (words[j].length() % 2 == 0) {
       row = rand() % 2;
@@ -240,25 +238,31 @@ void WordSearch::DrawSquares() {
 void WordSearch::Cheat() {
 
   cinder::gl::color(1,0,0);
-  cinder::gl::drawStrokedRect( cinder::Rectf( 80,500,130,550) );
-
+  cinder::gl::drawStrokedRect( cinder::Rectf( 60,500,90,530) );
+  PrintText("CHEAT", {130, 530});
+  cinder::gl::color(Color::black());
 }
 
 void WordSearch::keyDown( cinder::app::KeyEvent event ) {
-  string this_char (1, event.getChar());
-  build_word.append(this_char);
-  cinder::vec2 loc = {135, 135};
-  int count = 0;
+  cinder::gl::color(Color::white());
+  if (event.getChar()) {
+    string this_char (1, event.getChar());
+    build_word.append(this_char);
+    cinder::vec2 text_loc = {type_x_loc, 700};
+    type_x_loc += 9;
+    int count = 0;
+    PrintText(this_char, text_loc);
+  }
   if (event.getChar() == '!') {
-    for (int i = 0; i < words->length(); i++) {
-      for (int j = 0; j < typed_words[0].length(); j++) {
-        if (words[count] + '!' == this_char) {
-          PrintText("Worked", loc);
-        }
-      }
-    }
+    type_x_loc = 200;
+    build_word.clear();
+    cinder::gl::color(Color::black());
+    cinder::gl::drawSolidRect( cinder::Rectf( 80,600,800,750) );
+
   }
 }
+
+
 
 void WordSearch::keyUp( cinder::app::KeyEvent event ) {
   /*if( event.getChar() == 'a' ) {
