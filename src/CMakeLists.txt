@@ -19,7 +19,7 @@ ci_make_library(
         CINDER_PATH  ${CINDER_PATH}
         SOURCES      ${SOURCE_LIST}
         INCLUDES     "${FinalProject_SOURCE_DIR}/include"
-        LIBRARIES    sfml-graphics sfml-window
+        LIBRARIES    sfml-graphics sfml-window sqlite-modern-cpp sqlite3
         BLOCKS
 )
 
@@ -28,6 +28,7 @@ target_compile_features(mylibrary PUBLIC cxx_std_14)
 
 set_property(TARGET mylibrary PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 
 # Cross-platform compiler lints
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"

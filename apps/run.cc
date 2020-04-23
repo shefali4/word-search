@@ -2,7 +2,6 @@
 
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
-#include <SFML/Window.hpp>
 #include "my_app.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>

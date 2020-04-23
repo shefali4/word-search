@@ -233,7 +233,6 @@ void WordSearch::keyDown( cinder::app::KeyEvent event ) {
       }
     }
     build_word.clear();
-
   } else if (event.getChar()) {
     cinder::gl::color(Color::white());
     string this_char (1, event.getChar());
@@ -242,7 +241,6 @@ void WordSearch::keyDown( cinder::app::KeyEvent event ) {
     type_x_loc += 9;
     PrintText(this_char, text_loc);
   }
-
 
   //If shift is pressed, mark cheat box red
   if (event.isShiftDown()) {
