@@ -11,59 +11,63 @@
 namespace myapp {
 
 using cinder::Color;
+const char kDbPath[] = "game.db";
 using cinder::ColorA;
 using cinder::app::KeyEvent;
 using cinder::TextBox;
 using namespace std;
+mylibrary::Player player = {"shefali", 3, 20.0};
 string build_word;
 int type_x_loc = 300;
 const char kNormalFont[] = "Arial";
 int count = 0;
+int itr_count = 0;
+
 string words[] = {"apple", "orange", "banana", "grape", "kiwi", "melon",
                   "pear", "coconut", "cherry", "avacado", "peach"};
-list<string> word_bank = {};
+
+std::list<string> word_bank;
+std::list<string> already_answered;
 
 
 
-WordSearch::WordSearch() {}
+
+
+WordSearch::WordSearch()
+  :
+    state_{GameState::kPlaying} {}
 
 void WordSearch::setup() {
   word_bank.clear();
-/*
-  window.create(sf::VideoMode(800, 800), "SFML window");
-  window.setFramerateLimit(60);
-  while (window.isOpen()) {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
-        window.close();
-    }
-    window.setActive();
-    window.display();
-  }*/
 }
 
 void WordSearch::update() {
   KeyEvent event;
   keyDown(event);
 
-
+  //leaderboard_.AddScoreToLeaderBoard(player);
 }
 
 void WordSearch::draw() {
+
+  DisplayWordsFound();
   if (count == 0) {
-    DrawGrid();
+    cinder::gl::color(Color::black());
     InitializeEmpty();
     InsertWords();
     RandomLetters();
+    DrawSquares();
+    cinder::gl::color(Color::white());
+    DrawGrid();
     DisplayFilledGrid();
     DisplayWordsFound();
     DisplayCheat();
     count++;
+    }
   }
 }
 
-void WordSearch::PrintText(const std::string& text,
+void myapp::WordSearch::PrintText(const std::string& text,
                            const glm::vec2& loc) {
   auto box = TextBox()
       .alignment(TextBox::CENTER)
@@ -81,31 +85,37 @@ void WordSearch::PrintText(const std::string& text,
   cinder::gl::draw(texture, text_loc);
 }
 
-void WordSearch::InitializeEmpty() {
+void myapp::WordSearch::InitializeEmpty() {
   int loc_x = 288;
   int loc_y = 110;
   for (int i = 0; i < 20; i++) {
     for (int j = 0; j < 20; j++) {
       cinder::vec2 loc = {loc_x, loc_y};
       map[i][j] = "_";
+      valid_letter[i][j] = false;
       loc_x += 25;
     }
     loc_x = 288;
     loc_y += 25;
   }
-}
-
-void WordSearch::DisplayWordsFound() {
-  int loc_y = 130;
-  cinder::vec2 loc = {140, loc_y};
-  PrintText("Words Found:", loc);
   for (int i = 0; i < words->size(); i++) {
-    loc_y += 45;
-    PrintText(words[i] + "\n", {140, loc_y});
+    word_bank.push_back(words[i]);
   }
 }
 
-void WordSearch::InsertWords() {
+void myapp::WordSearch::DisplayWordsFound() {
+  int loc_y_words = 130;
+  if (already_answered.size() > itr_count) {
+    for (auto itr = already_answered.begin(); itr != already_answered.end(); ++itr) {
+      loc_y_words += 25;
+      PrintText(*itr, {140, loc_y_words});
+    }
+    itr_count++;
+  }
+
+}
+
+void myapp::WordSearch::InsertWords() {
   int row, col;
   for (int j = 0; j < words->size(); j++) {
 
@@ -116,8 +126,10 @@ void WordSearch::InsertWords() {
       for (int even = 0; even < words[j].length(); even++) {
         if (map[row][col] == "_") {
           PerWord(even, row, col, j);
+          valid_letter[row][col] = true;
           row++;
         } else {
+
           word_bank.remove(words[j]);
           break;
         }
@@ -131,8 +143,10 @@ void WordSearch::InsertWords() {
       for (int odd = 0; odd < words[j].length(); odd++) {
         if (map[row][col] == "_") {
           PerWord(odd, row, col, j);
+          valid_letter[row][col] = true;
           col++;
         } else {
+
           word_bank.remove(words[j]);
           break;
         }
@@ -144,7 +158,7 @@ void WordSearch::InsertWords() {
 
 //Goes through word and places letters horizontally/vertically depending on
 //changing row and col values
-void WordSearch::PerWord(int index, int row, int col, int j) {
+void myapp::WordSearch::PerWord(int index, int row, int col, int j) {
   string word = words[j];
   char each_char = word.at(index);
   string string_char(1,each_char);
@@ -152,7 +166,7 @@ void WordSearch::PerWord(int index, int row, int col, int j) {
 }
 
 //Chooses random letters excluding vowels
-void WordSearch::RandomLetters() {
+void myapp::WordSearch::RandomLetters() {
   char letters[] = "bcdfghjklmnpqrstvwxz";
   srand (time(nullptr));
   char random_char;
@@ -166,9 +180,11 @@ void WordSearch::RandomLetters() {
   }
 }
 
-void WordSearch::DisplayFilledGrid() {
+void myapp::WordSearch::DisplayFilledGrid() {
   int loc_x = 288;
   int loc_y = 110;
+  cinder::vec2 loc_words = {140, 130};
+  PrintText("Words Found:", loc_words);
   for (int row = 0; row < 20; row++) {
     for (int col = 0; col < 20; col++) {
       cinder::vec2 loc = {loc_x, loc_y};
@@ -181,7 +197,7 @@ void WordSearch::DisplayFilledGrid() {
 }
 
 //Draws grid patterns using rectangle outlines
-void WordSearch::DrawGrid() {
+void myapp::WordSearch::DrawGrid() {
   cinder::gl::lineWidth(100);
   int increment = 25;
   int left = 275;
@@ -208,7 +224,7 @@ void WordSearch::DrawGrid() {
 }
 
 //Displays Cheat box and text box
-void WordSearch::DisplayCheat() {
+void myapp::WordSearch::DisplayCheat() {
   cinder::gl::color(1,0,0);
   cinder::gl::drawStrokedRect( cinder::Rectf
   ( 60,500,90,530),5);
@@ -217,23 +233,36 @@ void WordSearch::DisplayCheat() {
 }
 
 
-void WordSearch::keyDown( cinder::app::KeyEvent event ) {
-
-  if (event.getChar() == ' ') {
+void myapp::WordSearch::keyDown( cinder::app::KeyEvent event ) {
+  if (event.isAltDown()) {
     type_x_loc = 300;
     cinder::gl::color(Color::black());
     cinder::gl::drawSolidRect( cinder::Rectf
                                    ( 80,600,800,750) );
-    for (int i = 0; i < words->size(); i++) {
-      if (words[i] == build_word) {
+    for (auto itr = word_bank.begin(); itr != word_bank.end(); ++itr) {
+      /*if (*itr != build_word) {
+        cinder::gl::color(Color::white());
+        PrintText("INCORRECT!", {600, 750});
+      } else {
+        cinder::gl::color(Color::black());
+        cinder::gl::drawSolidRect( cinder::Rectf( 500,600,700,750) );
         cinder::gl::color(Color::white());
         PrintText("CORRECT!", {600, 700});
-        word_bank.push_back(build_word);
         return;
+      }*/
+
+      if (*itr == build_word) {
+        cinder::gl::color(Color::white());
+        PrintText("CORRECT!", {600, 750});
+        already_answered.push_back(build_word);
       }
+
     }
     build_word.clear();
   } else if (event.getChar()) {
+    cinder::gl::color(Color::black());
+    cinder::gl::drawSolidRect( cinder::Rectf
+                                   ( 500,600,700,750) );
     cinder::gl::color(Color::white());
     string this_char (1, event.getChar());
     build_word.append(this_char);
@@ -250,16 +279,40 @@ void WordSearch::keyDown( cinder::app::KeyEvent event ) {
   }
 }
 
-void WordSearch::keyUp( cinder::app::KeyEvent event ) {
+void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
 
   //If shift is not being pressed, keep cheat box unmarked
   if (!event.isShiftDown()) {
-    cinder::gl::color(1,0,0);
-    cinder::gl::drawStrokedRect( cinder::Rectf
-    ( 60,500,90,530),5);
+    cinder::gl::color(1, 0, 0);
+    cinder::gl::drawStrokedRect(cinder::Rectf
+                                    (60, 500, 90, 530), 5);
     cinder::gl::color(Color::black());
-    cinder::gl::drawSolidRect( cinder::Rectf
-    ( 62,502,88,528));
+    cinder::gl::drawSolidRect(cinder::Rectf
+                                  (62, 502, 88, 528));
   }
+
 }
-}  // namespace myapp
+
+void myapp::WordSearch::DrawSquares() {
+  int left_start = 275;
+  int right_start = 296;
+  int bottom_start = 106;
+  int top_start = 85;
+  int increment = 25;
+  for (int i = 0; i < 20; i++) {
+    for (int j = 0; j < 20; j++) {
+      if (valid_letter[i][j] == true) {
+        cinder::gl::color(0,1,0);
+      } else {
+        cinder::gl::color(1,0,0);
+      }
+      cinder::gl::drawSolidRect(cinder::Rectf(left_start, top_start, right_start,bottom_start));
+      left_start += increment;
+      right_start +=increment;
+    }
+    left_start = 274;
+    right_start = 298;
+    top_start += increment;
+    bottom_start +=increment;
+  }
+}// namespace myapp

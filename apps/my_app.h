@@ -11,7 +11,13 @@
 #include <SFML/Window.hpp>
 #include <cinder/app/KeyEvent.h>
 
+
 namespace myapp {
+
+enum class GameState {
+  kPlaying,
+  kGameOver,
+};
 
 class WordSearch : public cinder::app::App {
  public:
@@ -79,9 +85,13 @@ class WordSearch : public cinder::app::App {
   void keyUp(cinder::app::KeyEvent event) override ;
   void DisplayCheat();
   void PerWord(int c, int row, int col, int j);
+  void DrawSquares();
  private:
   sf::String map[20][20];
   sf::Window window;
+  GameState state_;
+  bool valid_letter[20][20];
+
 };
 }  // namespace myapp
 

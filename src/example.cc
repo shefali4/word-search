@@ -8,15 +8,17 @@
 
 namespace mylibrary {
 
-using namespace std;
+using std::string;
+using std::vector;
 
 LeaderBoard::LeaderBoard(const string &db_path) : db_{db_path} {
   db_ << "CREATE TABLE if not exists leaderboard (\n"
-         "  name  TEXT NOT NULL,\n"
+         "  name  TEXT NOT NULL\n"
          "  score INTEGER NOT NULL\n"
          ");";
 }
 
+//Adds name, score, and time data to leaderboard
 void LeaderBoard::AddScoreToLeaderBoard(const Player &player) {
   db_ << "insert into leaderboard (name, score, time) values (?, ?, ?);"
       << player.name
