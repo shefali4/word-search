@@ -237,32 +237,26 @@ void myapp::WordSearch::keyDown( cinder::app::KeyEvent event ) {
   if (event.isAltDown()) {
     type_x_loc = 300;
     cinder::gl::color(Color::black());
-    cinder::gl::drawSolidRect( cinder::Rectf
-                                   ( 80,600,800,750) );
-    for (auto itr = word_bank.begin(); itr != word_bank.end(); ++itr) {
-      /*if (*itr != build_word) {
-        cinder::gl::color(Color::white());
-        PrintText("INCORRECT!", {600, 750});
-      } else {
-        cinder::gl::color(Color::black());
-        cinder::gl::drawSolidRect( cinder::Rectf( 500,600,700,750) );
-        cinder::gl::color(Color::white());
-        PrintText("CORRECT!", {600, 700});
-        return;
-      }*/
+    cinder::gl::drawSolidRect(cinder::Rectf
+                                  (80, 600, 800, 800));
 
-      if (*itr == build_word) {
-        cinder::gl::color(Color::white());
-        PrintText("CORRECT!", {600, 750});
-        already_answered.push_back(build_word);
-      }
-
+    if (InWordBank(build_word) && AlreadyAnswered(build_word)) {
+      cinder::gl::color(Color::white());
+      PrintText("already answered!", {600, 730});
+    } else if (InWordBank(build_word) && !AlreadyAnswered(build_word)){
+      cinder::gl::color(Color::white());
+      PrintText("correct!", {600, 730});
+      already_answered.push_back(build_word);
+    } else {
+      cinder::gl::color(Color::white());
+      PrintText("incorrect!", {600, 730});
     }
     build_word.clear();
+
   } else if (event.getChar()) {
     cinder::gl::color(Color::black());
     cinder::gl::drawSolidRect( cinder::Rectf
-                                   ( 500,600,700,750) );
+                                   ( 500,600,700,800) );
     cinder::gl::color(Color::white());
     string this_char (1, event.getChar());
     build_word.append(this_char);
@@ -292,6 +286,30 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
   }
 
 }
+
+bool myapp::WordSearch::AlreadyAnswered(string build_word) {
+  bool found = false;
+  for (auto aa = already_answered.begin(); aa != already_answered.end();++aa) {
+    if (*aa == build_word) {
+      found = true;
+      return found;
+    }
+  }
+  return found;
+}
+
+bool myapp::WordSearch::InWordBank(string build_word) {
+  bool found = false;
+  for (auto itr = word_bank.begin(); itr != word_bank.end(); ++itr) {
+    if (*itr == build_word) {
+      found = true;
+      return found;
+    }
+
+  }
+  return found;
+}
+
 
 void myapp::WordSearch::DrawSquares() {
   int left_start = 275;

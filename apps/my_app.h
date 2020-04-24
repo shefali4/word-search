@@ -86,6 +86,8 @@ class WordSearch : public cinder::app::App {
   void DisplayCheat();
   void PerWord(int c, int row, int col, int j);
   void DrawSquares();
+  bool AlreadyAnswered(std::string build_word);
+  bool InWordBank(std::string build_word);
  private:
   sf::String map[20][20];
   sf::Window window;
