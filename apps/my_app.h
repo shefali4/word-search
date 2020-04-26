@@ -88,13 +88,19 @@ class WordSearch : public cinder::app::App {
   void DrawSquares();
   bool AlreadyAnswered(std::string build_word);
   bool InWordBank(std::string build_word);
-  bool ShowHint();
-  bool DisplayWordCounter();
+  void DisplayWordCounter();
+  void DisplayTitle();
+  void DrawUIBackground();
+  void patternSearch();
+  bool search2DCol(int col_count);
+  bool search2DRow(int row_count);
+  void HighlightWords();
  private:
   sf::String map[20][20];
   sf::Window window;
   GameState state_;
   bool valid_letter[20][20];
+  bool answered_correctly[20][20];
   cinder::Timer timer;
 
 };
