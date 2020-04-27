@@ -27,7 +27,7 @@ using cinder::TextBox;
 using namespace std;
 mylibrary::Player player = {"shefali", 3, 20.0};
 string build_word;
-int type_x_loc = 125;
+int type_x_loc = 380;
 const char kNormalFont[] = "Baskerville";
 int count = 0;
 int itr_count = 0;
@@ -55,6 +55,7 @@ void WordSearch::update() {
   KeyEvent event;
   keyDown(event);
   HighlightWords();
+  GameOver();
   //leaderboard_.AddScoreToLeaderBoard(player);
 }
 
@@ -101,7 +102,7 @@ void myapp::WordSearch::InitializeEmpty() {
       map[i][j] = "_";
       valid_letter[i][j] = false;
       answered_correctly[i][j] = false;
-      loc_x += 27;
+      loc_x += 25;
     }
     loc_x = 288;
     loc_y += 25;
@@ -118,7 +119,8 @@ void myapp::WordSearch::DisplayWordsFound() {
     for (auto itr = already_answered.begin(); itr != already_answered.end();
          ++itr) {
       loc_y_words += 35;
-      PrintText(*itr, {140, loc_y_words});
+      cinder::gl::color(1,0,0);
+      PrintText(*itr, {135, loc_y_words});
     }
     itr_count++;
   }
@@ -192,7 +194,7 @@ void myapp::WordSearch::DisplayFilledGrid() {
   int loc_y = 110;
   cinder::vec2 loc_words_found = {140, 130};
   PrintText("Words Found:", loc_words_found);
-  cinder::vec2 loc_words_left = {110, 50};
+  cinder::vec2 loc_words_left = {115, 45};
   PrintText("Words Left: ", loc_words_left);
   for (int row = 0; row < 20; row++) {
     for (int col = 0; col < 20; col++) {
@@ -226,47 +228,49 @@ void myapp::WordSearch::DrawGrid() {
 void myapp::WordSearch::DisplayCheat() {
   cinder::gl::color(1, 0, 0);
   cinder::gl::drawStrokedRect(cinder::Rectf
-                                  (60, 500, 90, 530), 5);
-  PrintText("HINT", {140, 530});
+                                  (75, 500, 105, 530), 5);
+  PrintText("HINT", {150, 530});
   cinder::gl::color(Color::black());
 
 }
 
 void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
   if (event.isAltDown()) {
-    type_x_loc = 125;
+    type_x_loc = 380;
     cinder::gl::color(Color::white());
     cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                         (100, 650, 500, 700), 70);
+                                         (271, 650, 785, 700), 70);
     if (InWordBank(build_word) && AlreadyAnswered(build_word)) {
       cinder::gl::color(Color::black());
-      PrintText("ALREADY \n ANSWERED!", {680, 690});
-
+      PrintText("ALREADY \n ANSWERED!", {145, 680});
+      PrintText("SEARCH: ", {322, 689});
     } else if (InWordBank(build_word) && !AlreadyAnswered(build_word)) {
       word_to_highlight.clear();
+      cinder::gl::color(0,1,0);
+      PrintText("CORRECT!", {145, 689});
       cinder::gl::color(Color::black());
-      PrintText("CORRECT!", {680, 690});
-
-
+      PrintText("SEARCH: ", {322, 689});
+      words_left--;
       word_to_highlight = build_word;
       already_answered.push_back(build_word);
       patternSearch();
-
     } else {
+      cinder::gl::color(1,0,0);
+      PrintText("INCORRECT! \nTRY AGAIN!", {145, 680});
       cinder::gl::color(Color::black());
-      PrintText("INCORRECT! \nTRY AGAIN!", {680, 690});
+      PrintText("SEARCH: ", {322, 689});
     }
     build_word.clear();
     return;
 
   } else if (event.getChar()) {
     cinder::gl::color(0.988, 0.980, 0.835);
-    cinder::gl::drawSolidRect(cinder::Rectf(601, 650, 800, 800));
+    cinder::gl::drawSolidRect(cinder::Rectf(30, 650, 250, 800));
     cinder::gl::color(Color::black());
     string this_char(1, toupper(event.getChar()));
     build_word.append(this_char);
     cinder::vec2 text_loc = {type_x_loc, 690};
-    type_x_loc += 11;
+    type_x_loc += 17;
     PrintText(this_char, text_loc);
   }
 
@@ -275,7 +279,7 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     DrawSquares();
     cinder::gl::color(1, 0, 0);
     cinder::gl::drawSolidRect(cinder::Rectf
-                                  (60, 500, 90, 530));
+                                  (75, 500, 105, 530));
   }
 }
 
@@ -285,25 +289,25 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
   if (!event.isShiftDown()) {
     cinder::gl::color(1, 0, 0);
     cinder::gl::drawStrokedRect(cinder::Rectf
-                                    (60, 500, 90, 530), 5);
+                                    (75, 500, 105, 530), 5);
     cinder::gl::color(Color::white());
     cinder::gl::drawSolidRect(cinder::Rectf
-                                  (62, 502, 88, 528));
+                                  (77, 502, 103, 528));
 
-    int left_start = 275;
+    int left_start = 277;
     int right_start = 296;
     int bottom_start = 106;
     int top_start = 85;
     int increment = 25;
 
-    for (int i = 0; i < 20; i++) {
+    for (auto & i : valid_letter) {
       for (int j = 0; j < 20; j++) {
-        if (valid_letter[i][j]) {
+        if (i[j]) {
           cinder::gl::color(Color::white());
           cinder::gl::drawStrokedRect(cinder::Rectf(left_start,
                                                     top_start,
                                                     right_start,
-                                                    bottom_start));
+                                                    bottom_start), 7);
         }
 
         left_start += increment;
@@ -321,8 +325,8 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
 
 bool myapp::WordSearch::AlreadyAnswered(string build_word) {
   bool found = false;
-  for (auto aa = already_answered.begin(); aa != already_answered.end(); ++aa) {
-    if (*aa == build_word) {
+  for (auto & aa : already_answered) {
+    if (aa == build_word) {
       found = true;
       return found;
     }
@@ -346,7 +350,7 @@ void myapp::WordSearch::DrawUIBackground() {
   //Words Found
   cinder::gl::color(0.650, 0.854, 0.564);
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (35, 75, 235, 590), 20);
+                                       (35, 75, 235, 590), 18);
 
   cinder::gl::color(Color::white());
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
@@ -354,27 +358,40 @@ void myapp::WordSearch::DrawUIBackground() {
 
   //Word Counter
   cinder::gl::color(0.964, 0.694, 0.937);
-  cinder::gl::drawSolidRect(cinder::Rectf(40, 0, 230, 50));
+
+  cinder::gl::drawSolidRect(cinder::Rectf(40, 0, 230, 20));
 
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (40, 0, 230, 70), 20);
+                                       (40, 0, 230, 60), 20);
 
+  cinder::gl::color(Color::white());
+  cinder::gl::drawSolidRect(cinder::Rectf(44, 0, 226, 20));
+
+  cinder::gl::drawSolidRoundedRect(cinder::Rectf
+                                       (44, 0, 226, 56), 18);
+
+  //Search Bar
   cinder::gl::color(Color::black());
   cinder::gl::drawStrokedRoundedRect(cinder::Rectf
-                                         (100, 650, 600, 700), 70);
+                                         (271, 650, 785, 700), 70);
   cinder::gl::color(Color::white());
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (100, 650, 600, 700), 70);
+                                       (271, 650, 785, 700), 70);
+  cinder::gl::color(Color::black());
+  PrintText("SEARCH: ", {322, 689});
+
+  //Cover Search Bar Extra Outline
   cinder::gl::color(0.988, 0.980, 0.835);
-  cinder::gl::drawSolidRect(cinder::Rectf(601, 650, 800, 800));
+  cinder::gl::drawSolidRect(cinder::Rectf(786, 650, 800, 800));
 
   cinder::gl::color(Color::black());
-
 }
 
 void myapp::WordSearch::DisplayWordCounter() {
+  cinder::gl::color(Color::white());
+  cinder::gl::drawSolidRect(cinder::Rectf(160, 0, 190, 50));
   cinder::gl::color(Color::black());
-  cinder::vec2 loc_words = {170, 50};
+  cinder::vec2 loc_words = {174, 44};
   PrintText(std::to_string(words_left), loc_words);
 }
 
@@ -384,7 +401,7 @@ void myapp::WordSearch::DisplayTitle() {
 }
 
 void myapp::WordSearch::DrawSquares() {
-  int left_start = 275;
+  int left_start = 277;
   int right_start = 296;
   int bottom_start = 106;
   int top_start = 85;
@@ -397,11 +414,12 @@ void myapp::WordSearch::DrawSquares() {
                                                   top_start,
                                                   right_start,
                                                   bottom_start));
+
       }
       left_start += increment;
       right_start += increment;
     }
-    left_start = 274;
+    left_start = 277;
     right_start = 298;
     top_start += increment;
     bottom_start += increment;
@@ -420,13 +438,11 @@ bool myapp::WordSearch::search2DCol(int col_count) {
   } else {
     row_loc = row_index_found;
     col_string.clear();
-    std::cout << row_loc << " " << col_loc << " ";
     for (int i = row_loc; i < word_to_highlight.length(); i++) {
       answered_correctly[i][col_loc] = true;
     }
     return true;
   }
-
 }
 
 bool myapp::WordSearch::search2DRow(int row_count) {
@@ -436,8 +452,6 @@ bool myapp::WordSearch::search2DRow(int row_count) {
     row_loc = row_count;
   }
   col_index_found = row_string.find(word_to_highlight);
-
-  std::cout << row_string << " " << col_index_found << "\n";
   if (col_index_found == -1) {
     return false;
   } else {
@@ -454,7 +468,6 @@ bool myapp::WordSearch::search2DRow(int row_count) {
 void myapp::WordSearch::patternSearch() {
   col_index_found = -1;
   row_index_found = -1;
-
   row_loc = 0;
   col_loc = 0;
   if (word_to_highlight.length() % 2 != 0) {
@@ -473,30 +486,40 @@ void myapp::WordSearch::patternSearch() {
   }
 }
 
+void myapp::WordSearch::GameOver() {
+  if (words_left == 0) {
+    cinder::gl::color(Color::black());
+    cinder::gl::drawSolidRoundedRect(cinder::Rectf
+                                         (150, 150, 650, 650), 40);
+    cinder::gl::color(Color::white());
+    PrintText("GAME OVER", {400, 230});
+
+  }
+}
+
 void myapp::WordSearch::HighlightWords() {
-  int left_start = 277;
-  int right_start = 298;
-  int bottom_start = 108;
-  int top_start = 84;
-  int increment = 25;
+  double left_start = 277;
+  double right_start = 302;
+  double bottom_start = 110;
+  double top_start = 84;
+  double increment = 25;
   for (int i = 0; i < 20; i++) {
     for (int j = 0; j < 20; j++) {
       if (answered_correctly[i][j]) {
         cinder::gl::color(0.650, 0.854, 0.564);
         cinder::gl::drawSolidRect(cinder::Rectf(left_start,
-                                                  top_start,
-                                                  right_start,
-                                                  bottom_start));
+                                                       top_start,
+                                                       right_start,
+                                                       bottom_start));
+
       }
       left_start += increment;
       right_start += increment;
     }
-    left_start = 274;
-    right_start = 298;
+    left_start = 277;
+    right_start = 302;
     top_start += increment;
     bottom_start += increment;
   }
 }
-
-
 }// namespace myapp

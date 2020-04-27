@@ -94,6 +94,7 @@ class WordSearch : public cinder::app::App {
   void patternSearch();
   bool search2DCol(int col_count);
   bool search2DRow(int row_count);
+  void GameOver();
   void HighlightWords();
  private:
   sf::String map[20][20];
