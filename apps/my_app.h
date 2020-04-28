@@ -10,7 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <cinder/app/KeyEvent.h>
-
+#include <SFML/Audio.hpp>
 
 namespace myapp {
 
@@ -39,7 +39,7 @@ class WordSearch : public cinder::app::App {
    * @param text string of words needed to be printed
    * @param loc location
    */
-  void PrintText(const std::string& text,
+  static void PrintText(const std::string& text,
                  const glm::vec2& loc);
 
   /**
@@ -50,12 +50,12 @@ class WordSearch : public cinder::app::App {
   /**
    * Draws grid 20 x 20
    */
-  void DrawGrid();
+  static void DrawGrid();
 
   /**
    * Collects all the correct words the player has found
    */
-  void DisplayWordsFound();
+  static void DisplayWordsFound();
 
   /**
    * Inserts the words from the word bank into the grid
@@ -86,8 +86,8 @@ class WordSearch : public cinder::app::App {
   void DisplayCheat();
   void PerWord(int c, int row, int col, int j);
   void DrawSquares();
-  bool AlreadyAnswered(std::string build_word);
-  bool InWordBank(std::string build_word);
+  bool AlreadyAnswered();
+  bool InWordBank();
   void DisplayWordCounter();
   void DisplayTitle();
   void DrawUIBackground();
@@ -98,11 +98,11 @@ class WordSearch : public cinder::app::App {
   void HighlightWords();
  private:
   sf::String map[20][20];
-  sf::Window window;
   GameState state_;
   bool valid_letter[20][20];
   bool answered_correctly[20][20];
   cinder::Timer timer;
+
 
 };
 }  // namespace myapp

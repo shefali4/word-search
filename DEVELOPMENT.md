@@ -1,7 +1,6 @@
 # Development
 
 ---
-
 - **4/19/20** Cloned final project from repo/Started on game logic
    - Updated Readme.md to reflect new ideas presented in code review
    - Will review/spell check for final submission and continue to update
@@ -30,10 +29,7 @@
    
 - **4/26/20** Fixed malloc error
    [x] Display correct answer and add to word bank if found
-   
-- **4/27/20** 
-   [x] 
-   
+  
    
 - **4/28/20** 
    [x] 

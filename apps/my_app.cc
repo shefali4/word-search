@@ -7,7 +7,7 @@
 #include <list>
 #include <cinder/app/App.h>
 #include <SFML/Window.hpp>
-
+#include <cinder/audio/Voice.h>
 
 namespace myapp {
 
@@ -15,32 +15,37 @@ using cinder::Color;
 const char kDbPath[] = "game.db";
 using cinder::ColorA;
 using cinder::app::KeyEvent;
-int col_count = 0;
-int row_count = 0;
+using namespace std;
+using namespace ci;
+using cinder::TextBox;
+string build_word;
 std::string col_string;
+std::string word_to_highlight;
 std::string row_string;
+int words_left;
 int col_index_found = -1;
 int row_index_found = -1;
 int row_loc;
 int col_loc;
-using cinder::TextBox;
-using namespace std;
-mylibrary::Player player = {"shefali", 3, 20.0};
-string build_word;
+int count = 0;
 int type_x_loc = 380;
 const char kNormalFont[] = "Baskerville";
-int count = 0;
 int itr_count = 0;
-
-int words_left;
-string word_to_highlight;
-
+std::list<string> word_bank;
 string words[] = {"APPLE", "ORANGE", "BANANA", "GRAPE", "KIWI", "MELON",
                   "PEAR", "coconut", "cherry", "avacado", "peach"};
 int words_size = words->size();
-
-std::list<string> word_bank;
 std::list<string> already_answered;
+ci::audio::VoiceRef mBackground;
+ci::audio::VoiceRef mTyping;
+ci::audio::VoiceRef mCorrect;
+ci::audio::VoiceRef mIncorrect;
+ci::audio::VoiceRef mHint;
+ci::audio::VoiceRef mEndGame;
+
+
+
+
 
 WordSearch::WordSearch()
     :
@@ -49,13 +54,38 @@ WordSearch::WordSearch()
 void WordSearch::setup() {
   word_bank.clear();
   timer.start(0);
+
+  audio::SourceFileRef background_audio =
+      audio::load(app::loadAsset("puzzle.ogg"));
+  mBackground = audio::Voice::create(background_audio);
+  mBackground->start();
+
+  audio::SourceFileRef correct_audio =
+      audio::load(app::loadAsset("correct.mp3"));
+  mCorrect = audio::Voice::create(correct_audio);
+
+  audio::SourceFileRef incorrect_audio =
+      audio::load(app::loadAsset("incorrect.mp3"));
+  mIncorrect = audio::Voice::create(incorrect_audio);
+
+  audio::SourceFileRef typing_audio =
+      audio::load(app::loadAsset("type.mp3"));
+  mTyping = audio::Voice::create(typing_audio);
+
+  audio::SourceFileRef end_game_audio =
+      audio::load(app::loadAsset("cheer.wav"));
+  mEndGame = audio::Voice::create(end_game_audio);
+
+  audio::SourceFileRef hint_audio =
+      audio::load(app::loadAsset("hint.wav"));
+  mHint = audio::Voice::create(hint_audio);
+
 }
 
 void WordSearch::update() {
   KeyEvent event;
   keyDown(event);
   HighlightWords();
-  GameOver();
   //leaderboard_.AddScoreToLeaderBoard(player);
 }
 
@@ -107,7 +137,7 @@ void myapp::WordSearch::InitializeEmpty() {
     loc_x = 288;
     loc_y += 25;
   }
-  for (int i = 0; i < words->size(); i++) {
+  for (int i = 0; i < words_size; i++) {
     word_bank.push_back(words[i]);
   }
 
@@ -116,11 +146,10 @@ void myapp::WordSearch::InitializeEmpty() {
 void myapp::WordSearch::DisplayWordsFound() {
   int loc_y_words = 130;
   if (already_answered.size() > itr_count) {
-    for (auto itr = already_answered.begin(); itr != already_answered.end();
-         ++itr) {
+    for (auto & itr : already_answered) {
       loc_y_words += 35;
       cinder::gl::color(1,0,0);
-      PrintText(*itr, {135, loc_y_words});
+      PrintText(itr, {135, loc_y_words});
     }
     itr_count++;
   }
@@ -179,11 +208,11 @@ void myapp::WordSearch::RandomLetters() {
   char letters[] = "bcdfghjklmnpqrstvwxz";
   srand(time(nullptr));
   char random_char;
-  for (int row = 0; row < 20; row++) {
+  for (auto & row : map) {
     for (int col = 0; col < 20; col++) {
-      if (map[row][col] == "_") {
+      if (row[col] == "_") {
         random_char = toupper(letters[rand() % 20]);
-        map[row][col] = random_char;
+        row[col] = random_char;
       }
     }
   }
@@ -196,10 +225,10 @@ void myapp::WordSearch::DisplayFilledGrid() {
   PrintText("Words Found:", loc_words_found);
   cinder::vec2 loc_words_left = {115, 45};
   PrintText("Words Left: ", loc_words_left);
-  for (int row = 0; row < 20; row++) {
+  for (auto & row : map) {
     for (int col = 0; col < 20; col++) {
       cinder::vec2 loc = {loc_x, loc_y};
-      PrintText(map[row][col], loc);
+      PrintText(row[col], loc);
       loc_x += 25;
     }
     loc_x = 288;
@@ -216,7 +245,6 @@ void myapp::WordSearch::DrawGrid() {
   cinder::gl::color(0.650, 0.854, 0.564);
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
                                        (265, 75, 790, 590), 20);
-
   cinder::gl::color(Color::white());
   cinder::gl::drawSolidRoundedRect(cinder::Rectf
                                        (271, 80, 785, 584), 20);
@@ -240,14 +268,15 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     cinder::gl::color(Color::white());
     cinder::gl::drawSolidRoundedRect(cinder::Rectf
                                          (271, 650, 785, 700), 70);
-    if (InWordBank(build_word) && AlreadyAnswered(build_word)) {
+    if (InWordBank() && AlreadyAnswered()) {
       cinder::gl::color(Color::black());
       PrintText("ALREADY \n ANSWERED!", {145, 680});
       PrintText("SEARCH: ", {322, 689});
-    } else if (InWordBank(build_word) && !AlreadyAnswered(build_word)) {
+    } else if (InWordBank() && !AlreadyAnswered()) {
       word_to_highlight.clear();
       cinder::gl::color(0,1,0);
       PrintText("CORRECT!", {145, 689});
+      mCorrect->start();
       cinder::gl::color(Color::black());
       PrintText("SEARCH: ", {322, 689});
       words_left--;
@@ -257,6 +286,7 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     } else {
       cinder::gl::color(1,0,0);
       PrintText("INCORRECT! \nTRY AGAIN!", {145, 680});
+      mIncorrect->start();
       cinder::gl::color(Color::black());
       PrintText("SEARCH: ", {322, 689});
     }
@@ -264,6 +294,7 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     return;
 
   } else if (event.getChar()) {
+
     cinder::gl::color(0.988, 0.980, 0.835);
     cinder::gl::drawSolidRect(cinder::Rectf(30, 650, 250, 800));
     cinder::gl::color(Color::black());
@@ -271,12 +302,14 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     build_word.append(this_char);
     cinder::vec2 text_loc = {type_x_loc, 690};
     type_x_loc += 17;
+    mTyping->start();
     PrintText(this_char, text_loc);
   }
 
   //If shift is pressed, mark cheat box red
   if (event.isShiftDown()) {
     DrawSquares();
+    mHint->start();
     cinder::gl::color(1, 0, 0);
     cinder::gl::drawSolidRect(cinder::Rectf
                                   (75, 500, 105, 530));
@@ -284,9 +317,10 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
 }
 
 void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
-
+  mTyping->stop();
   //If shift is not being pressed, keep cheat box unmarked
   if (!event.isShiftDown()) {
+    mHint->stop();
     cinder::gl::color(1, 0, 0);
     cinder::gl::drawStrokedRect(cinder::Rectf
                                     (75, 500, 105, 530), 5);
@@ -323,7 +357,7 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
 
 }
 
-bool myapp::WordSearch::AlreadyAnswered(string build_word) {
+bool myapp::WordSearch::AlreadyAnswered() {
   bool found = false;
   for (auto & aa : already_answered) {
     if (aa == build_word) {
@@ -334,7 +368,7 @@ bool myapp::WordSearch::AlreadyAnswered(string build_word) {
   return found;
 }
 
-bool myapp::WordSearch::InWordBank(string build_word) {
+bool myapp::WordSearch::InWordBank() {
   bool found = false;
   for (auto itr = word_bank.begin(); itr != word_bank.end(); ++itr) {
     if (*itr == build_word) {
@@ -393,6 +427,9 @@ void myapp::WordSearch::DisplayWordCounter() {
   cinder::gl::color(Color::black());
   cinder::vec2 loc_words = {174, 44};
   PrintText(std::to_string(words_left), loc_words);
+  if (words_left == 0) {
+   GameOver();
+  }
 }
 
 void myapp::WordSearch::DisplayTitle() {
@@ -414,7 +451,6 @@ void myapp::WordSearch::DrawSquares() {
                                                   top_start,
                                                   right_start,
                                                   bottom_start));
-
       }
       left_start += increment;
       right_start += increment;
@@ -428,8 +464,8 @@ void myapp::WordSearch::DrawSquares() {
 
 bool myapp::WordSearch::search2DCol(int col_count) {
   col_string.clear();
-  for (int row = 0; row < 20; row++) {
-    col_string.append(map[row][col_count]);
+  for (auto & row : map) {
+    col_string.append(row[col_count]);
     col_loc = col_count;
   }
   row_index_found = col_string.find(word_to_highlight);
@@ -488,11 +524,15 @@ void myapp::WordSearch::patternSearch() {
 
 void myapp::WordSearch::GameOver() {
   if (words_left == 0) {
+    cinder::gl::color(0.988, 0.980, 0.835);
+    cinder::gl::drawSolidRect(cinder::Rectf
+                                  (0, 0, 800, 800));
     cinder::gl::color(Color::black());
     cinder::gl::drawSolidRoundedRect(cinder::Rectf
                                          (150, 150, 650, 650), 40);
     cinder::gl::color(Color::white());
     PrintText("GAME OVER", {400, 230});
+    mEndGame->start();
 
   }
 }
