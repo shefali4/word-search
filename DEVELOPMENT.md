@@ -30,15 +30,11 @@
 - **4/26/20** Fixed malloc error
    [x] Display correct answer and add to word bank if found
   
-   
 - **4/28/20** 
-   [x] 
-   
-- **4/29/20** 
-   [x] 
-   
-- **4/30/20** 
-   [x] 
-   
-   
+   [x] Clean code
+   [x] Add comments
+   [x] Update Readme.md
+   [ ] Make a plan for last week
+   [x] Add sound
+
    

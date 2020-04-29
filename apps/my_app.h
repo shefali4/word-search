@@ -83,18 +83,80 @@ class WordSearch : public cinder::app::App {
    * @param event key event
    */
   void keyUp(cinder::app::KeyEvent event) override ;
+
+  /**
+   * Displays hint box and hint text
+   */
   void DisplayCheat();
+
+  /**
+   *
+   * @param c
+   * @param row
+   * @param col
+   * @param j
+   */
   void PerWord(int c, int row, int col, int j);
+
+  /**
+   * Draws invidible squares over each cell in grid
+   */
   void DrawSquares();
+
+  /**
+   * Checks if word has already been answered
+   * @return boolean
+   */
   bool AlreadyAnswered();
+
+  /**
+   * Checks if word is in word bank
+   * @return boolean
+   */
   bool InWordBank();
+
+  /**
+   * Reduces count for each word answered correctly
+   */
   void DisplayWordCounter();
+
+  /**
+   * Displays Word Search title at top of screen
+   */
   void DisplayTitle();
+
+  /**
+   * Draws Squares to highlight grid and word bank section
+   */
   void DrawUIBackground();
+
+  /**
+   * Searches for word to mark correct on grid
+   */
   void patternSearch();
+
+  /**
+   * Searches for word vertically
+   * @param col_count
+   * @return
+   */
   bool search2DCol(int col_count);
+
+  /**
+   * Searches for word horizontally
+   * @param row_count
+   * @return
+   */
   bool search2DRow(int row_count);
+
+  /**
+   * Controls what happens when game is over
+   */
   void GameOver();
+
+  /**
+   * Highlights word on grid if found
+   */
   void HighlightWords();
  private:
   sf::String map[20][20];

@@ -266,8 +266,9 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
   if (event.isAltDown()) {
     type_x_loc = 380;
     cinder::gl::color(Color::white());
-    cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                         (271, 650, 785, 700), 70);
+    cinder::gl::drawSolidRoundedRect(
+        cinder::Rectf(
+            271, 650, 785, 700), 70);
     if (InWordBank() && AlreadyAnswered()) {
       cinder::gl::color(Color::black());
       PrintText("ALREADY \n ANSWERED!", {145, 680});
@@ -296,7 +297,8 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
   } else if (event.getChar()) {
 
     cinder::gl::color(0.988, 0.980, 0.835);
-    cinder::gl::drawSolidRect(cinder::Rectf(30, 650, 250, 800));
+    cinder::gl::drawSolidRect(
+        cinder::Rectf(30, 650, 250, 800));
     cinder::gl::color(Color::black());
     string this_char(1, toupper(event.getChar()));
     build_word.append(this_char);
@@ -322,8 +324,9 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
   if (!event.isShiftDown()) {
     mHint->stop();
     cinder::gl::color(1, 0, 0);
-    cinder::gl::drawStrokedRect(cinder::Rectf
-                                    (75, 500, 105, 530), 5);
+    cinder::gl::drawStrokedRect(
+        cinder::Rectf(
+            75, 500, 105, 530), 5);
     cinder::gl::color(Color::white());
     cinder::gl::drawSolidRect(cinder::Rectf
                                   (77, 502, 103, 528));
@@ -383,34 +386,36 @@ void myapp::WordSearch::DrawUIBackground() {
 
   //Words Found
   cinder::gl::color(0.650, 0.854, 0.564);
-  cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (35, 75, 235, 590), 18);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(35, 75, 235, 590), 18);
 
   cinder::gl::color(Color::white());
-  cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (40, 80, 230, 584), 20);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(40, 80, 230, 584), 20);
 
   //Word Counter
   cinder::gl::color(0.964, 0.694, 0.937);
 
-  cinder::gl::drawSolidRect(cinder::Rectf(40, 0, 230, 20));
+  cinder::gl::drawSolidRect(
+      cinder::Rectf(40, 0, 230, 20));
 
-  cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (40, 0, 230, 60), 20);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(40, 0, 230, 60), 20);
 
   cinder::gl::color(Color::white());
-  cinder::gl::drawSolidRect(cinder::Rectf(44, 0, 226, 20));
+  cinder::gl::drawSolidRect(
+      cinder::Rectf(44, 0, 226, 20));
 
-  cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (44, 0, 226, 56), 18);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(44, 0, 226, 56), 18);
 
   //Search Bar
   cinder::gl::color(Color::black());
-  cinder::gl::drawStrokedRoundedRect(cinder::Rectf
-                                         (271, 650, 785, 700), 70);
+  cinder::gl::drawStrokedRoundedRect(
+      cinder::Rectf(271, 650, 785, 700), 70);
   cinder::gl::color(Color::white());
-  cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                       (271, 650, 785, 700), 70);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(271, 650, 785, 700), 70);
   cinder::gl::color(Color::black());
   PrintText("SEARCH: ", {322, 689});
 
@@ -533,7 +538,6 @@ void myapp::WordSearch::GameOver() {
     cinder::gl::color(Color::white());
     PrintText("GAME OVER", {400, 230});
     mEndGame->start();
-
   }
 }
 
