@@ -133,21 +133,21 @@ class WordSearch : public cinder::app::App {
   /**
    * Searches for word to mark correct on grid
    */
-  void patternSearch();
+  void SearchPattern();
 
   /**
    * Searches for word vertically
    * @param col_count
    * @return
    */
-  bool search2DCol(int col_count);
+  bool Search2DCol(int col_count);
 
   /**
    * Searches for word horizontally
    * @param row_count
    * @return
    */
-  bool search2DRow(int row_count);
+  bool Search2DRow(int row_count);
 
   /**
    * Controls what happens when game is over
@@ -158,12 +158,17 @@ class WordSearch : public cinder::app::App {
    * Highlights word on grid if found
    */
   void HighlightWords();
+
+  void ReadFile();
  private:
   sf::String map[20][20];
   GameState state_;
   bool valid_letter[20][20];
   bool answered_correctly[20][20];
+  std::string *words;
   cinder::Timer timer;
+  int rows;
+
 
 
 };
