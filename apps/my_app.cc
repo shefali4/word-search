@@ -24,6 +24,7 @@ std::string col_string;
 std::string word_to_highlight;
 std::string row_string;
 int words_left;
+//rename constant vars
 int col_index_found = -1;
 int row_index_found = -1;
 int row_loc;
@@ -33,8 +34,6 @@ int type_x_loc = 380;
 const char kNormalFont[] = "Baskerville";
 int itr_count = 0;
 std::list<string> word_bank;
-//string words[] = {"APPLE", "ORANGE", "BANANA", "GRAPE", "KIWI", "MELON",
-               //   "PEAR", "coconut", "cherry", "avacado", "peach"};
 string words[] = {};
 std::list<string> words_file;
 int words_size;
@@ -45,7 +44,6 @@ ci::audio::VoiceRef mCorrect;
 ci::audio::VoiceRef mIncorrect;
 ci::audio::VoiceRef mHint;
 ci::audio::VoiceRef mEndGame;
-
 
 
 
@@ -81,7 +79,6 @@ void WordSearch::setup() {
   audio::SourceFileRef hint_audio =
       audio::load(app::loadAsset("hint.wav"));
   mHint = audio::Voice::create(hint_audio);
-
 }
 
 
@@ -89,7 +86,6 @@ void WordSearch::update() {
   KeyEvent event;
   keyDown(event);
   HighlightWords();
-  //leaderboard_.AddScoreToLeaderBoard(player);
 }
 
 void WordSearch::draw() {
@@ -116,7 +112,8 @@ void myapp::WordSearch::PrintText(const std::string &text,
       .font(cinder::Font(kNormalFont, 20))
       .size({400, 50})
       .color(Color::white())
-      .backgroundColor(ColorA(1, 0.988, 0.839, 0))
+      .backgroundColor(
+          ColorA(1, 0.988, 0.839, 0))
       .text(text);
   const auto text_size = box.getSize();
   const cinder::vec2 text_loc =
@@ -128,7 +125,9 @@ void myapp::WordSearch::PrintText(const std::string &text,
 
 void WordSearch::ReadFile() {
 
-  ifstream indata("/Users/shefalisharma/software/Cinder/my-projects/final-project-shefali4/assets/puzzle.spf");
+  ifstream indata("/Users/shefalisharma/"
+                  "software/Cinder/my-projects/"
+                  "final-project-shefali4/assets/puzzle.spf");
   if(indata.fail()) {
     cout << "The entered filepath is not valid.";
     return;
@@ -141,17 +140,11 @@ void WordSearch::ReadFile() {
 
   int n = words_file.size();
   words = new string[n];
-  int count = 0;
-  for (auto itr = words_file.begin(); itr != words_file.end(); ++itr) {
-    words[count] = *itr;
-    count++;
+  int kCount = 0;
+  for (auto & itr : words_file) {
+    words[kCount] = itr;
+    kCount++;
   }
-
-  for (int i = 0; i < words->size(); i++) {
-    std::cout << words[i] << ' ';
-  }
-
-
   words_size = words_file.size();
 }
 
@@ -173,7 +166,6 @@ void myapp::WordSearch::InitializeEmpty() {
   for (int i = 0; i < words_size; i++) {
     word_bank.push_back(words[i]);
   }
-
 }
 
 void myapp::WordSearch::DisplayWordsFound() {
@@ -196,13 +188,15 @@ void myapp::WordSearch::InsertWords() {
     string word = words[0];
     //if word length is even, place word vertically
     if (words[j].length() % 2 == 0) {
-      row = rand() % 1;
+      row = rand() % 10;
       col = rand() % 20;
       for (int even = 0; even < words[j].length(); even++) {
         if (map[row][col] == "_") {
-          PerWord(even, row, col, j);
-          valid_letter[row][col] = true;
-          row++;
+          if (CheckNextEven(words[j].length(), row, col)) {
+            PerWord(even, row, col, j);
+            valid_letter[row][col] = true;
+            row++;
+          }
         } else {
           word_bank.remove(words[j]);
           break;
@@ -213,14 +207,15 @@ void myapp::WordSearch::InsertWords() {
     //if word length is odd, place word horizontally
     if (words[j].length() % 2 != 0) {
       row = rand() % 20;
-      col = rand() % 1;
+      col = rand() % 4;
       for (int odd = 0; odd < words[j].length(); odd++) {
         if (map[row][col] == "_") {
-          PerWord(odd, row, col, j);
-          valid_letter[row][col] = true;
-          col++;
+          if (CheckNextOdd(words[j].length(), row, col)) {
+            PerWord(odd, row, col, j);
+            valid_letter[row][col] = true;
+            col++;
+          }
         } else {
-
           word_bank.remove(words[j]);
           break;
         }
@@ -229,6 +224,25 @@ void myapp::WordSearch::InsertWords() {
   }
   words_left = word_bank.size();
 
+}
+
+bool myapp::WordSearch::CheckNextEven(int word_length, int row, int col) {
+  for (int i = row; i < word_length; i++) {
+    if (!(map[row][col] == "_")) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+bool myapp::WordSearch::CheckNextOdd(int word_length, int row, int col) {
+  for (int i = col; i < word_length; i++) {
+    if (!(map[row][col] == "_")) {
+      return false;
+    }
+  }
+  return true;
 }
 
 //Goes through word and places letters horizontally/vertically depending on
@@ -246,10 +260,10 @@ void myapp::WordSearch::RandomLetters() {
   srand(time(nullptr));
   char random_char;
   for (auto & row : map) {
-    for (int col = 0; col < 20; col++) {
-      if (row[col] == "_") {
+    for (auto & col : row) {
+      if (col == "_") {
         random_char = toupper(letters[rand() % 20]);
-        row[col] = random_char;
+        col = random_char;
       }
     }
   }
@@ -375,8 +389,8 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
     int increment = 25;
 
     for (auto & i : valid_letter) {
-      for (int j = 0; j < 20; j++) {
-        if (i[j]) {
+      for (bool j : i) {
+        if (j) {
           cinder::gl::color(Color::white());
           cinder::gl::drawStrokedRect(cinder::Rectf(left_start,
                                                     top_start,
@@ -410,8 +424,8 @@ bool myapp::WordSearch::AlreadyAnswered() {
 
 bool myapp::WordSearch::InWordBank() {
   bool found = false;
-  for (auto itr = word_bank.begin(); itr != word_bank.end(); ++itr) {
-    if (*itr == build_word) {
+  for (auto & itr : word_bank) {
+    if (itr == build_word) {
       found = true;
       return found;
     }
@@ -470,7 +484,7 @@ void myapp::WordSearch::DisplayWordCounter() {
   cinder::vec2 loc_words = {174, 44};
   PrintText(std::to_string(words_left), loc_words);
   if (words_left == 0) {
-    GameOver();
+    YouWin();
   }
 }
 
@@ -485,9 +499,9 @@ void myapp::WordSearch::DrawSquares() {
   int bottom_start = 108;
   int top_start = 85;
   int increment = 25;
-  for (int i = 0; i < 20; i++) {
-    for (int j = 0; j < 20; j++) {
-      if (valid_letter[i][j]) {
+  for (auto & i : valid_letter) {
+    for (bool j : i) {
+      if (j) {
         cinder::gl::color(0, 1, 0);
         cinder::gl::drawStrokedRect(cinder::Rectf(left_start,
                                                   top_start,
@@ -536,7 +550,7 @@ bool myapp::WordSearch::Search2DRow(int row_count) {
     col_loc = col_index_found;
     row_string.clear();
     col_string.clear();
-    for (int i = col_loc; i < word_to_highlight.length(); i++) {
+    for (int i = col_loc; i < word_to_highlight.length() + 1; i++) {
       answered_correctly[row_loc][i] = true;
     }
     return true;
@@ -564,16 +578,22 @@ void myapp::WordSearch::SearchPattern() {
   }
 }
 
-void myapp::WordSearch::GameOver() {
+void myapp::WordSearch::YouWin() {
   if (words_left == 0) {
     cinder::gl::color(0.988, 0.980, 0.835);
-    cinder::gl::drawSolidRect(cinder::Rectf
-                                  (0, 0, 800, 800));
+    cinder::gl::drawSolidRect(
+        cinder::Rectf(0, 0, 800, 800));
     cinder::gl::color(Color::black());
-    cinder::gl::drawSolidRoundedRect(cinder::Rectf
-                                         (150, 150, 650, 650), 40);
+    cinder::gl::drawSolidRoundedRect(
+        cinder::Rectf(150, 150, 650, 650),
+        40);
     cinder::gl::color(Color::white());
-    PrintText("GAME OVER", {400, 230});
+    PrintText("YOU WIN! NICE JOB!", {400, 480});
+    timer.stop();
+    PrintText("YOU FINISHED THE PUZZLE IN ",{400,250});
+    PrintText(std::to_string(timer.getSeconds()),
+        {400,330});
+    PrintText("SECONDS!",{400,410});
     mEndGame->start();
   }
 }
@@ -584,9 +604,9 @@ void myapp::WordSearch::HighlightWords() {
   double bottom_start = 110;
   double top_start = 84;
   double increment = 25;
-  for (int i = 0; i < 20; i++) {
-    for (int j = 0; j < 20; j++) {
-      if (answered_correctly[i][j]) {
+  for (auto & i : answered_correctly) {
+    for (bool j : i) {
+      if (j) {
         cinder::gl::color(0.650, 0.854, 0.564);
         cinder::gl::drawSolidRect(cinder::Rectf(left_start,
                                                 top_start,

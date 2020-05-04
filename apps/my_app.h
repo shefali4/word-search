@@ -152,7 +152,7 @@ class WordSearch : public cinder::app::App {
   /**
    * Controls what happens when game is over
    */
-  void GameOver();
+  void YouWin();
 
   /**
    * Highlights word on grid if found
@@ -160,6 +160,8 @@ class WordSearch : public cinder::app::App {
   void HighlightWords();
 
   void ReadFile();
+  bool CheckNextEven(int word_length, int row, int col);
+  bool CheckNextOdd(int word_length, int row, int col);
  private:
   sf::String map[20][20];
   GameState state_;
