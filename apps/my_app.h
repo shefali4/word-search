@@ -11,12 +11,14 @@
 #include <SFML/Window.hpp>
 #include <cinder/app/KeyEvent.h>
 #include <SFML/Audio.hpp>
+#include "hint.h"
+#include "display.h"
+#include <list>
 
 namespace myapp {
 
 enum class GameState {
-  kPlaying,
-  kGameOver,
+  kPlaying
 };
 
 class WordSearch : public cinder::app::App {
@@ -39,8 +41,7 @@ class WordSearch : public cinder::app::App {
    * @param text string of words needed to be printed
    * @param loc location
    */
-  static void PrintText(const std::string& text,
-                 const glm::vec2& loc);
+  void PrintText(const std::string& text, const glm::vec2& loc);
 
   /**
    * Creates empty grid with '_' in each spot
@@ -48,14 +49,9 @@ class WordSearch : public cinder::app::App {
   void InitializeEmpty();
 
   /**
-   * Draws grid 20 x 20
-   */
-  static void DrawGrid();
-
-  /**
    * Collects all the correct words the player has found
    */
-  static void DisplayWordsFound();
+  void DisplayWordsFound();
 
   /**
    * Inserts the words from the word bank into the grid
@@ -63,40 +59,35 @@ class WordSearch : public cinder::app::App {
   void InsertWords();
 
   /**
-   * Inserts random letters
+   * Inserts random letters excluding vowels
    */
   void RandomLetters();
 
   /**
-   * Displays table
+   * Displays grid with filled cells
    */
   void DisplayFilledGrid();
 
   /**
-   * Checks if Cheat button has been accessed
+   * Checks if Hint button has been accessed
    * @param event key event
    */
   void keyDown(cinder::app::KeyEvent event) override;
 
   /**
-   * Controls Cheat button
+   * Controls Hint button
    * @param event key event
    */
   void keyUp(cinder::app::KeyEvent event) override ;
 
   /**
-   * Displays hint box and hint text
+   * Places letters horizontally/vertically depending on row/col values
+   * @param index position of character
+   * @param row location of char in row
+   * @param col location of char in column
+   * @param j which word in list
    */
-  void DisplayCheat();
-
-  /**
-   *
-   * @param c
-   * @param row
-   * @param col
-   * @param j
-   */
-  void PerWord(int c, int row, int col, int j);
+  void PerWord(int index, int row, int col, int j);
 
   /**
    * Draws invidible squares over each cell in grid
@@ -116,41 +107,31 @@ class WordSearch : public cinder::app::App {
   bool InWordBank();
 
   /**
-   * Reduces count for each word answered correctly
+   * Writes major headers of UI components
    */
-  void DisplayWordCounter();
+  void DrawHeaders();
 
   /**
-   * Displays Word Search title at top of screen
-   */
-  void DisplayTitle();
-
-  /**
-   * Draws Squares to highlight grid and word bank section
-   */
-  void DrawUIBackground();
-
-  /**
-   * Searches for word to mark correct on grid
+   * Finds row/col location on grid
    */
   void SearchPattern();
 
   /**
    * Searches for word vertically
    * @param col_count
-   * @return
+   * @return boolean
    */
   bool Search2DCol(int col_count);
 
   /**
    * Searches for word horizontally
    * @param row_count
-   * @return
+   * @return boolean
    */
   bool Search2DRow(int row_count);
 
   /**
-   * Controls what happens when game is over
+   * Displays You Win screen and time took to complete puzzle
    */
   void YouWin();
 
@@ -159,21 +140,57 @@ class WordSearch : public cinder::app::App {
    */
   void HighlightWords();
 
+  /**
+   * Reduces count for each word answered correctly
+   */
+  void UpdateCounter();
+
+  /**
+   * Reads words from given file path
+   */
   void ReadFile();
+
+  /**
+   * Controls different options for when word is entered
+   */
+  void AltOptions();
+
+  /**
+   * Checks if full word has been entered
+   * @param word_length length of word
+   * @param row location
+   * @param col location
+   * @return boolean
+   */
   bool CheckNextEven(int word_length, int row, int col);
+
+  /**
+   * Checks if full word has been entered
+   * @param word_length length of word
+   * @param row location
+   * @param col location
+   * @return boolean
+   */
   bool CheckNextOdd(int word_length, int row, int col);
+
  private:
-  sf::String map[20][20];
-  GameState state_;
   bool valid_letter[20][20];
   bool answered_correctly[20][20];
+  int row_loc;
+  int col_loc;
+  int words_size;
+  int words_left;
+  sf::String grid[20][20];
+  std::list<std::string> word_bank;
+  std::string typed_word;
+  std::string col_string;
+  std::string word_to_highlight;
+  std::string row_string;
   std::string *words;
   cinder::Timer timer;
-  int rows;
-
-
-
+  GameState state_;
+  std::list<std::string> file_words;
+  std::list<std::string> already_answered;
 };
-}  // namespace myapp
-
+} // namespace myapp
 #endif  // FINALPROJECT_APPS_MYAPP_H_

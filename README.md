@@ -21,11 +21,13 @@ from previous projects to build an application that contains
 impressive features and put into perspective the new tools and 
 libraries I can work with and produce a functional project implementing them.
 
-External libraries: If I decide to pull the words search words from a JSON
-file, I will use the RapidXml library to parse through the file and read the
-words. This is the link to the RapidXml documentation: https://rapidjson
-.org/. I also will use SFML to help with displaying a grid and improving
-the UI.
+External libraries: I used SFML for my external library. SFML is a simple,
+fast, cross-platform and object-oriented multimedia API. It provides access 
+to windowing, graphics, audio and network. I used SFML to control a major part
+of my project: the puzzle grid itself. This grid contains the inserted 
+characters from the word bank, randomized characters, and helps track the 
+position of the characters to highlight the grid once the user enters the 
+correct word.
 
 Timeline:
 

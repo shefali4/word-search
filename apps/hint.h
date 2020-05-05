@@ -5,14 +5,17 @@
 #ifndef FINALPROJECT_APPS_MY_APP_CC_CHEAT_H_
 #define FINALPROJECT_APPS_MY_APP_CC_CHEAT_H_
 
+#include "my_app.h"
 
 namespace myapp {
 
-class Cheat {
+class Hint {
  public:
-  void DisplayCheat();
+  /**
+   * Displays hint box
+   */
+  void DisplayHint();
+
 };
-
-
 }
 #endif //FINALPROJECT_APPS_MY_APP_CC_CHEAT_H_

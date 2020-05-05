@@ -30,7 +30,7 @@
 - **4/26/20** Fixed malloc error
    [x] Display correct answer and add to word bank if found
   
-- **4/28/20** 
+- **4/28/20** Plan for next week
    [x] Clean code
    [x] Add comments
    [x] Update Readme.md
@@ -38,3 +38,17 @@
    [x] Add sound
 
    
+- **4/30/20** Read from File
+   [x] Created Puzzle file to read words from
+   [x] Wrote logic for read file
+   [x] Convert list to array
+   
+- **5/2/20** Display name, time, score using SQLite
+   [x] Clean code
+   [ ] Work on displaying name, time, score
+   
+- **5/4/20** You Win Screen Text
+   [x] Show time took to complete puzzle on You Win screen
+   [x] Condense code/clean up
+   [x] Add comments
+   [x] Update Readme.md and Development.md file
