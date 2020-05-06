@@ -5,12 +5,8 @@
 
 #include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
-#include <mylibrary/example.h>
 #include <string>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 #include <cinder/app/KeyEvent.h>
-#include <SFML/Audio.hpp>
 #include "hint.h"
 #include "display.h"
 #include <list>
@@ -98,13 +94,13 @@ class WordSearch : public cinder::app::App {
    * Checks if word has already been answered
    * @return boolean
    */
-  bool AlreadyAnswered();
+  bool AlreadyAnswered(std::string typed_word);
 
   /**
    * Checks if word is in word bank
    * @return boolean
    */
-  bool InWordBank();
+  bool InWordBank(std::string typed_word);
 
   /**
    * Writes major headers of UI components
@@ -173,6 +169,10 @@ class WordSearch : public cinder::app::App {
    */
   bool CheckNextOdd(int word_length, int row, int col);
 
+
+
+  void HelpButton();
+
  private:
   bool valid_letter[20][20];
   bool answered_correctly[20][20];
@@ -180,7 +180,7 @@ class WordSearch : public cinder::app::App {
   int col_loc;
   int words_size;
   int words_left;
-  sf::String grid[20][20];
+  std::string grid[20][20];
   std::list<std::string> word_bank;
   std::string typed_word;
   std::string col_string;

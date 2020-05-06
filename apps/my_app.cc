@@ -24,7 +24,7 @@ using cinder::ColorA;
 int col_index_found = -1;
 int row_index_found = -1;
 int count = 0;
-int type_x_loc = 380;
+int type_x_loc = 400;
 int itr_count = 0;
 const char kNormalFont[] = "Baskerville";
 
@@ -292,7 +292,7 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
   //If Alt is pressed, check if answer is correct, incorrect, or already
   // answered
   if (event.isAltDown()) {
-    type_x_loc = 380;
+    type_x_loc = 400;
     cinder::gl::color(Color::white());
     cinder::gl::drawSolidRoundedRect(
         cinder::Rectf(271, 650, 785, 700),
@@ -321,24 +321,30 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
     cinder::gl::drawSolidRect(cinder::Rectf
                                   (75, 500, 105, 530));
   }
+
+  if (event.isControlDown()) {
+    HelpButton();
+  }
 }
 
 void myapp::WordSearch::AltOptions() {
 
   //Already Answered
-  if (InWordBank() && AlreadyAnswered()) {
+  if (InWordBank(typed_word) && AlreadyAnswered(typed_word)) {
     cinder::gl::color(Color::black());
     PrintText("ALREADY \n ANSWERED!", {145, 680});
-    PrintText("SEARCH: ", {322, 689});
+    PrintText("SEARCH: ", {330, 689});
 
     //Correct Answer
-  } else if (InWordBank() && !AlreadyAnswered()) {
+  } else if (InWordBank(typed_word) && !AlreadyAnswered(typed_word)) {
     word_to_highlight.clear();
     mCorrect->start();
+    cinder::gl::color(Color::black());
+    PrintText("CORRECT!", {146, 690});
     cinder::gl::color(0,1,0);
     PrintText("CORRECT!", {145, 689});
     cinder::gl::color(Color::black());
-    PrintText("SEARCH: ", {322, 689});
+    PrintText("SEARCH: ", {330, 689});
     words_left--;
     word_to_highlight = typed_word;
     already_answered.push_back(typed_word);
@@ -346,17 +352,26 @@ void myapp::WordSearch::AltOptions() {
 
     //Incorrect Answer
   } else {
-    cinder::gl::color(1,0,0);
     mIncorrect->start();
+    cinder::gl::color(Color::black());
+    PrintText("INCORRECT! \nTRY AGAIN!", {146, 681});
+    cinder::gl::color(1,0,0);
     PrintText("INCORRECT! \nTRY AGAIN!", {145, 680});
     cinder::gl::color(Color::black());
-    PrintText("SEARCH: ", {322, 689});
+    PrintText("SEARCH: ", {330, 689});
   }
   typed_word.clear();
 }
 
 void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
   mTyping->stop();
+
+  //If Help button is not pressed
+  if (!event.isControlDown()) {
+    cinder::gl::color(0.988, 0.980, 0.835);
+    cinder::gl::drawSolidRect(
+        cinder::Rectf(240, 705, 790, 790));
+  }
 
   //If shift is not being pressed, keep hint box unmarked
   if (!event.isShiftDown()) {
@@ -394,7 +409,7 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
 }
 
 //Check if word has already been answered
-bool myapp::WordSearch::AlreadyAnswered() {
+bool myapp::WordSearch::AlreadyAnswered(string typed_word) {
   for (auto & answer : already_answered) {
     if (answer == typed_word) {
       return true;
@@ -404,7 +419,7 @@ bool myapp::WordSearch::AlreadyAnswered() {
 }
 
 //Check if word is in word bank
-bool myapp::WordSearch::InWordBank() {
+bool myapp::WordSearch::InWordBank(string typed_word) {
   for (auto & itr : word_bank) {
     if (itr == typed_word) {
       return true;
@@ -528,7 +543,7 @@ void myapp::WordSearch::YouWin() {
       40);
 
   cinder::gl::color(Color::white());
-  PrintText("YOU WIN! NICE JOB!", {400, 480});
+  PrintText("YOU WIN! NICE JOB!", {400, 520});
   PrintText("YOU FINISHED THE PUZZLE IN ",{400,250});
   PrintText(std::to_string(timer.getSeconds()),
             {400,330});
@@ -562,13 +577,29 @@ void myapp::WordSearch::HighlightWords() {
 
 //Writes headers for major UI components
 void myapp::WordSearch::DrawHeaders() {
+  cinder::gl::color(Color::white());
+  PrintText("SEARCH IT!", {401, 61});
   cinder::gl::color(Color::black());
-  PrintText("SEARCH: ", {322, 689});
-  PrintText("HINT", {150, 530});
   PrintText("SEARCH IT!", {400, 60});
-  cinder::vec2 loc_words_found = {140, 130};
-  PrintText("Words Found:", loc_words_found);
-  cinder::vec2 loc_words_left = {115, 45};
-  PrintText("Words Left: ", loc_words_left);
+  PrintText("SEARCH: ", {330, 689});
+  PrintText("HINT", {150, 530});
+  PrintText("Words Found:", {140, 130});
+  PrintText("Words Left: ", {115, 45});
+  PrintText("?", {755, 40});
+}
+
+void myapp::WordSearch::HelpButton() {
+  cinder::gl::color(0.988, 0.980, 0.835);
+  cinder::gl::color(Color::black());
+  cinder::gl::color(0.631, 0.929, 0.949);
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(271, 710, 785, 780), 20);
+  cinder::gl::color(Color::white());
+  cinder::gl::drawSolidRoundedRect(
+      cinder::Rectf(274, 713, 782, 777), 18);
+  cinder::gl::color(Color::black());
+  PrintText("Help:", {340, 750});
+  PrintText("Click Alt to Enter Word", {600, 740});
+  PrintText("Click Shift to Use Hint", {600, 770});
 }
 }// namespace myapp

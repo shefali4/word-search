@@ -5,7 +5,8 @@
 #include <catch2/catch.hpp>
 #include <cinder/Rand.h>
 
-#include <mylibrary/example.h>
+
+using myapp::WordSearch;
 
 
 TEST_CASE("Random sanity test", "[random]") {
@@ -13,3 +14,14 @@ TEST_CASE("Random sanity test", "[random]") {
   REQUIRE(0. <= random);
   REQUIRE(random <= 1.);
 }
+
+
+
+/*
+TEST_CASE("Already Answered", "[already-answered]") {
+  std::list<std::string> file_words;
+  REQUIRE(0. <= random);
+  REQUIRE(random <= 1.);
+}
+
+*/

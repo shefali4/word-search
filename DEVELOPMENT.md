@@ -52,3 +52,8 @@
    [x] Condense code/clean up
    [x] Add comments
    [x] Update Readme.md and Development.md file
+   
+- **5/4/20** You Win Screen Text
+  [x] Added Help Button
+  [x] Make key toggle to show instructions for the game
+  [ ] Write test cases

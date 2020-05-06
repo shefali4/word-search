@@ -9,11 +9,11 @@ file(GLOB SOURCE_LIST CONFIGURE_DEPENDS
 
 
 ci_make_app(
-    APP_NAME    cinder-myapp
-    CINDER_PATH ${CINDER_PATH}
-    SOURCES     ${SOURCE_LIST}
-    LIBRARIES   mylibrary sqlite-modern-cpp sqlite3
-    BLOCKS
+        APP_NAME    cinder-myapp
+        CINDER_PATH ${CINDER_PATH}
+        SOURCES     ${SOURCE_LIST}
+        LIBRARIES   mylibrary sqlite-modern-cpp sqlite3
+        BLOCKS
 )
 
 target_compile_features(cinder-myapp PRIVATE cxx_std_14)
