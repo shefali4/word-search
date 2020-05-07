@@ -29,7 +29,6 @@ void myapp::Display::DrawComponents() {
       cinder::Rectf(271, 80, 785, 584),
       10);
 
-
   //Words Found
   cinder::gl::color(0.650, 0.854, 0.564);
   cinder::gl::drawSolidRoundedRect(
@@ -38,7 +37,6 @@ void myapp::Display::DrawComponents() {
   cinder::gl::color(cinder::Color::white());
   cinder::gl::drawSolidRoundedRect(
       cinder::Rectf(40, 80, 230, 584), 20);
-
 
   //Word Counter
   cinder::gl::color(0.964, 0.694, 0.937);
@@ -55,7 +53,6 @@ void myapp::Display::DrawComponents() {
   cinder::gl::drawSolidRoundedRect(
       cinder::Rectf(44, 0, 226, 56), 18);
 
-
   //Help Button
   cinder::gl::color(0.631, 0.929, 0.949);
   cinder::gl::drawSolidRect(
@@ -71,7 +68,6 @@ void myapp::Display::DrawComponents() {
   cinder::gl::drawSolidRoundedRect(
       cinder::Rectf(724, 0, 786, 56), 18);
 
-
   //Search Bar
   cinder::gl::color(cinder::Color::black());
   cinder::gl::drawStrokedRoundedRect(
@@ -81,7 +77,6 @@ void myapp::Display::DrawComponents() {
   cinder::gl::drawSolidRoundedRect(
       cinder::Rectf(
           271, 650, 785, 700), 70);
-
 
   //Cover Search Bar Extra Outline
   cinder::gl::color(0.988, 0.980, 0.835);

@@ -94,7 +94,7 @@ class WordSearch : public cinder::app::App {
    * Checks if word has already been answered
    * @return boolean
    */
-  bool AlreadyAnswered(std::string typed_word);
+  bool AlreadyAnswered(std::string typed_word, std::list<std::string> already_answered);
 
   /**
    * Checks if word is in word bank
@@ -169,8 +169,9 @@ class WordSearch : public cinder::app::App {
    */
   bool CheckNextOdd(int word_length, int row, int col);
 
-
-
+  /**
+   * Displays basic instructions for the game
+   */
   void HelpButton();
 
  private:

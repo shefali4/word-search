@@ -330,13 +330,13 @@ void myapp::WordSearch::keyDown(cinder::app::KeyEvent event) {
 void myapp::WordSearch::AltOptions() {
 
   //Already Answered
-  if (InWordBank(typed_word) && AlreadyAnswered(typed_word)) {
+  if (InWordBank(typed_word) && AlreadyAnswered(typed_word, already_answered)) {
     cinder::gl::color(Color::black());
     PrintText("ALREADY \n ANSWERED!", {145, 680});
     PrintText("SEARCH: ", {330, 689});
 
     //Correct Answer
-  } else if (InWordBank(typed_word) && !AlreadyAnswered(typed_word)) {
+  } else if (InWordBank(typed_word) && !AlreadyAnswered(typed_word, already_answered)) {
     word_to_highlight.clear();
     mCorrect->start();
     cinder::gl::color(Color::black());
@@ -366,7 +366,7 @@ void myapp::WordSearch::AltOptions() {
 void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
   mTyping->stop();
 
-  //If Help button is not pressed
+  //If Help button is not pressed, make it dissappear
   if (!event.isControlDown()) {
     cinder::gl::color(0.988, 0.980, 0.835);
     cinder::gl::drawSolidRect(
@@ -409,7 +409,7 @@ void myapp::WordSearch::keyUp(cinder::app::KeyEvent event) {
 }
 
 //Check if word has already been answered
-bool myapp::WordSearch::AlreadyAnswered(string typed_word) {
+bool myapp::WordSearch::AlreadyAnswered(string typed_word, std::list<std::string> already_answered) {
   for (auto & answer : already_answered) {
     if (answer == typed_word) {
       return true;

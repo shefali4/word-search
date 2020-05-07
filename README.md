@@ -6,7 +6,7 @@ I am interested in working on building a word search program
 which displays a grid of randomized letters, displays a word 
 bank, and displays a timer tracking how long the player takes 
 to solve the puzzle.
-
+_______
 In order to complete this project, I will use the experience 
 I gained with using SQLite databases to store the words being 
 used in the puzzle and using audio through cinder to play 
@@ -21,6 +21,8 @@ from previous projects to build an application that contains
 impressive features and put into perspective the new tools and 
 libraries I can work with and produce a functional project implementing them.
 
+_______
+
 External libraries: I used SFML for my external library. SFML is a simple,
 fast, cross-platform and object-oriented multimedia API. It provides access 
 to windowing, graphics, audio and network. I used SFML to control a major part
@@ -28,6 +30,9 @@ of my project: the puzzle grid itself. This grid contains the inserted
 characters from the word bank, randomized characters, and helps track the 
 position of the characters to highlight the grid once the user enters the 
 correct word.
+SFML GitHub Link: https://github.com/SFML/SFML
+
+__________
 
 Timeline:
 
