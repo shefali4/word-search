@@ -1,4 +1,4 @@
-# CS 126 Final: Word Search]
+# Word Search
 
 Author: [Shefali Sharma]
 
