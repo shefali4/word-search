@@ -57,3 +57,5 @@ If I finish the game early, I will try to improve the UI and possibly
 have the user control the letters they select by highlighting the grid 
 square green. I will add a way for the user to pause the game and possibly 
 add a variety of difficulty levels.
+
+Website: https://sharma-portfolio.wixsite.com/info
