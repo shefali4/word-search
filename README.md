@@ -40,14 +40,17 @@ By Week 1: I plan to do research on finding a source of random words
 to be able to use it in my SQL database. I will start a foundational 
 UI for displaying my grid of randomized letters and display a word bank. 
 I will also display a timer tracking how long the game lasts
+
+
 By Week 2: I plan to work on allowing the user to select a word they 
 see within the word search by dragging a line starting from the first 
 letter to the last letter. If the player selects a valid word from the 
 word bank, the word should become a lighter shade, maybe grey, representing 
 that it has been found. I will add sound to play if the user is correct or 
 incorrect.
-By Week 3: I will finalize a title screen with buttons directing to the game 
-. I will try to implement a hint button as well as a way to display the 
+
+By Week 3: I will finalize a title screen with buttons directing to the game.
+I will try to implement a hint button as well as a way to display the 
 solution to the entire puzzle. After a certain period of time, if the 
 puzzle is not solved, there should be a countdown and a game over screen 
 should appear. When the game ends, the screen should display the player 
