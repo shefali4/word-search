@@ -1,14 +1,10 @@
-# Word Search
+# Search It : Customizable/Solvable Word Search 
 
-Author: [Shefali Sharma]
-
-
-![Word Search](wordsearch.png)
-
-I am interested in working on building a word search program 
-which displays a grid of randomized letters, displays a word 
+Word search application built in C++ which displays a grid of randomized letters, displays a word 
 bank, and displays a timer tracking how long the player takes 
 to solve the puzzle.
+![Word Search](wordsearch.png)
+
 _______
 In order to complete this project, I will use the experience 
 I gained with using SQLite databases to store the words being 
