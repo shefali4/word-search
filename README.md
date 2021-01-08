@@ -2,6 +2,9 @@
 
 Author: [Shefali Sharma]
 
+
+![Word Search](wordsearch.png)
+
 I am interested in working on building a word search program 
 which displays a grid of randomized letters, displays a word 
 bank, and displays a timer tracking how long the player takes 
@@ -61,4 +64,3 @@ have the user control the letters they select by highlighting the grid
 square green. I will add a way for the user to pause the game and possibly 
 add a variety of difficulty levels.
 
-Website: https://sharma-portfolio.wixsite.com/info
